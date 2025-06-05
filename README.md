@@ -10,6 +10,92 @@
 - **構造化レポート**: Markdown形式での詳細分析レポート生成（`reports/`ディレクトリに出力）
 - **柔軟なLLM管理**: OpenAI/Anthropic等の複数プロバイダー対応
 
+## システムフロー
+
+### 議論フロー
+
+```mermaid
+graph TD
+    A[メインコーディネーター] --> B[議論開始・論点整理]
+    B --> C[フェーズ1: 初期見解表明]
+    C --> D[フェーズ2: 相互議論 前半]
+    D --> E[フェーズ3: 相互議論 後半]
+    E --> F[フェーズ4: 合意形成]
+    F --> G[フェーズ5: 議論総まとめ]
+    G --> H[Markdownレポート生成]
+    
+    subgraph "対話的議論プロセス"
+        I[基本ペルソナ5名]
+        I --> J[ITスタートアップPM]
+        I --> K[エンタープライズPM]
+        I --> L[テックリード]
+        I --> M[スクラムマスター]
+        I --> N[エンジニアリングマネージャー]
+    end
+    
+    C --> I
+    D --> I
+    E --> I
+    F --> I
+```
+
+### システム構成
+
+```mermaid
+graph TB
+    subgraph "外部サービス"
+        LLM1[OpenAI API]
+        LLM2[Anthropic API]
+        LLM3[Other LLM APIs]
+    end
+    
+    subgraph "PMPL Agent System"
+        subgraph "コア層"
+            COORD[メインコーディネーター]
+            REPORT[レポート生成]
+        end
+        
+        subgraph "ペルソナ層"
+            P1[ITスタートアップPM]
+            P2[エンタープライズPM]
+            P3[テックリード]
+            P4[スクラムマスター]
+            P5[エンジニアリングマネージャー]
+        end
+        
+        subgraph "データ層"
+            DB[(議論データ)]
+            CONFIG[設定管理]
+            STORAGE[ローカルストレージ]
+        end
+        
+        subgraph "管理層"
+            LLM_MGR[LLMマネージャー]
+            CLI[CLI インターフェース]
+        end
+    end
+    
+    USER[ユーザー] --> CLI
+    CLI --> COORD
+    COORD --> P1
+    COORD --> P2
+    COORD --> P3
+    COORD --> P4
+    COORD --> P5
+    COORD --> REPORT
+    REPORT --> STORAGE
+    LLM_MGR --> LLM1
+    LLM_MGR --> LLM2
+    LLM_MGR --> LLM3
+    COORD --> LLM_MGR
+    P1 --> LLM_MGR
+    P2 --> LLM_MGR
+    P3 --> LLM_MGR
+    P4 --> LLM_MGR
+    P5 --> LLM_MGR
+    STORAGE --> DB
+```
+
 ## 対象ユーザー
 
 - **IT業界の10-50人規模組織**におけるPMPL
