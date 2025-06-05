@@ -1,0 +1,24 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Docker コンテナ内でコードをマウントして常に実行するルール
+globs:
+  - "**/*.py"
+  - "**/*.js"
+  - "**/*.ts"
+alwaysApply: true
+---
+# Docker 実行ルール
+
+- **必ず** Docker コンテナを用いて開発環境を構築すること :contentReference[oaicite:6]{index=6}
+- ホスト側のプロジェクトルートを `-v <ホストパス>:<コンテナパス>` または `--mount type=bind,source=<ホストパス>,target=<コンテナパス>` でマウントすること :contentReference[oaicite:7]{index=7}
+- Docker Compose 利用時は `docker-compose.yml` の `volumes` セクションにホスト→コンテナのマウント設定を記述すること :contentReference[oaicite:8]{index=8}
+- VSCode の Dev Container (`.devcontainer/devcontainer.json`) を使う場合、`workspaceFolder` をマウント先に合わせて設定すること :contentReference[oaicite:9]{index=9}
+- コンテナ内でターミナル操作やスクリプト実行を完結させ、ローカルホストには依存しないこと  
+- `docker exec -it <サービス名> bash` 等で必ずコンテナ内に入り、そこからコマンドを実行すること :contentReference[oaicite:10]{index=10}
+- Dockerfile はプロジェクトルートの `./docker/` 配下にまとめ、`docker build` は手動実行とすること :contentReference[oaicite:11]{index=11}
+- 匿名ボリュームや Docker ボリュームは使わず、標準の bind mount のみ利用すること :contentReference[oaicite:12]{index=12}
+- `docker-compose`コマンドは使用せず、`docker compose`コマンドを使用すること

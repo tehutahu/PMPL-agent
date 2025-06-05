@@ -1,0 +1,40 @@
+services:
+  pmpl-agent:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    container_name: pmpl-agent-dev
+    volumes:
+      # bind mountでプロジェクトルートをマウント
+      - type: bind
+        source: .
+        target: /app
+    ports:
+      - "8000:8000"
+    working_dir: /app
+    environment:
+      - PYTHONPATH=/app/src
+      - ENVIRONMENT=development
+    stdin_open: true
+    tty: true
+    command: bash
+
+  # 本番環境用のサービス（オプション）
+  pmpl-agent-prod:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    container_name: pmpl-agent-prod
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    ports:
+      - "8001:8000"
+    working_dir: /app
+    environment:
+      - PYTHONPATH=/app/src
+      - ENVIRONMENT=production
+    command: uvicorn pmpl_agent_system.api:app --host 0.0.0.0 --port 8000
+    profiles:
+      - production 
